@@ -46,6 +46,7 @@ public struct MCEmojiPickerRepresentableController: UIViewControllerRepresentabl
     ///
     /// The default value of this property is `nil`.
     public var customHeight: CGFloat?
+    public var customWitdh: CGFloat?
     
     /// Inset from the sourceView border.
     ///
@@ -76,6 +77,7 @@ public struct MCEmojiPickerRepresentableController: UIViewControllerRepresentabl
         selectedEmoji: Binding<String>,
         arrowDirection: MCPickerArrowDirection? = nil,
         customHeight: CGFloat? = nil,
+        customWitdh: CGFloat? = nil,
         horizontalInset: CGFloat? = nil,
         isDismissAfterChoosing: Bool? = nil,
         selectedEmojiCategoryTintColor: UIColor? = nil,
@@ -85,6 +87,7 @@ public struct MCEmojiPickerRepresentableController: UIViewControllerRepresentabl
         self._selectedEmoji = selectedEmoji
         self.arrowDirection = arrowDirection
         self.customHeight = customHeight
+        self.customWitdh = customWitdh
         self.horizontalInset = horizontalInset
         self.isDismissAfterChoosing = isDismissAfterChoosing
         self.selectedEmojiCategoryTintColor = selectedEmojiCategoryTintColor
@@ -114,6 +117,7 @@ public struct MCEmojiPickerRepresentableController: UIViewControllerRepresentabl
             emojiPicker.sourceView = representableController.view
             if let arrowDirection { emojiPicker.arrowDirection = arrowDirection }
             if let customHeight { emojiPicker.customHeight = customHeight }
+            if let customWitdh { emojiPicker.customWitdh = customWitdh }
             if let horizontalInset { emojiPicker.horizontalInset = horizontalInset }
             if let isDismissAfterChoosing { emojiPicker.isDismissAfterChoosing = isDismissAfterChoosing }
             if let selectedEmojiCategoryTintColor {

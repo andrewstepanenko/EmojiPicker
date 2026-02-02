@@ -37,17 +37,14 @@ final class MCTouchableEmojiCategoryView: UIView {
     
     // MARK: - Private Properties
     
-    private var categoryIconView: MCEmojiCategoryIconView
-    /// Insets for categoryIconView.
-    private lazy var categoryIconViewInsets: UIEdgeInsets = {
-        // The number 0.23 was taken based on the proportion of this element to the width of the EmojiPicker on MacOS.
-        let inset = bounds.width * 0.23
-        return UIEdgeInsets(top: inset, left: inset, bottom: inset, right: inset)
-    }()
+    private let categoryIconView: MCEmojiCategoryIconView
     /// Target category index.
-    private var categoryIndex: Int
+    private let categoryIndex: Int
     
     private weak var delegate: MCEmojiCategoryViewDelegate?
+    
+    /// Fixed icon size to keep icons at a normal width regardless of popover width.
+    private let iconSize: CGFloat
     
     // MARK: - Initializers
     
@@ -55,15 +52,18 @@ final class MCTouchableEmojiCategoryView: UIView {
         delegate: MCEmojiCategoryViewDelegate,
         categoryIndex: Int,
         categoryType: MCEmojiCategoryType,
-        selectedEmojiCategoryTintColor: UIColor
+        selectedEmojiCategoryTintColor: UIColor,
+        iconSize: CGFloat = 14 // sensible default that looks close to system segmented icons
     ) {
         self.delegate = delegate
         self.categoryIndex = categoryIndex
+        self.iconSize = iconSize
         self.categoryIconView = MCEmojiCategoryIconView(
             type: categoryType,
             selectedIconTintColor: selectedEmojiCategoryTintColor
         )
         super.init(frame: .zero)
+        setupCategoryIconViewLayout()
     }
     
     required init?(coder: NSCoder) {
@@ -74,7 +74,7 @@ final class MCTouchableEmojiCategoryView: UIView {
     
     override func layoutSubviews() {
         super.layoutSubviews()
-        setupCategoryIconViewLayout()
+        // Nothing dynamic to do on each layout pass.
     }
 
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -104,13 +104,19 @@ final class MCTouchableEmojiCategoryView: UIView {
     // MARK: - Private Methods
     
     private func setupCategoryIconViewLayout() {
-        guard !categoryIconView.isDescendant(of: self) else { return }
         addSubview(categoryIconView)
+        
+        // Make sure Auto Layout is used and no autoresizing masks leak in.
+        translatesAutoresizingMaskIntoConstraints = false
+        categoryIconView.translatesAutoresizingMaskIntoConstraints = false
+        
+        // Center the icon and keep a fixed size so it doesn't stretch with popover width
         NSLayoutConstraint.activate([
-            categoryIconView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: categoryIconViewInsets.left),
-            categoryIconView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -categoryIconViewInsets.right),
-            categoryIconView.topAnchor.constraint(equalTo: topAnchor, constant: categoryIconViewInsets.top),
-            categoryIconView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -categoryIconViewInsets.bottom)
+            categoryIconView.centerXAnchor.constraint(equalTo: centerXAnchor),
+            categoryIconView.centerYAnchor.constraint(equalTo: centerYAnchor),
+            categoryIconView.widthAnchor.constraint(equalToConstant: iconSize),
+            categoryIconView.heightAnchor.constraint(equalToConstant: iconSize)
         ])
     }
 }
+

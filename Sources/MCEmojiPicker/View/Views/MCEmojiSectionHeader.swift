@@ -30,8 +30,8 @@ final class MCEmojiSectionHeader: UICollectionReusableView {
         static let backgroundColor = UIColor.popoverBackgroundColor
         
         static let headerLabelColor = UIColor.systemGray
-        static let headerLabelFont = UIFont.systemFont(ofSize: 14.fit(), weight: .regular)
-        static let headerLabelInsets = UIEdgeInsets(top: 0, left: 7, bottom: -4, right: -16)
+        static let headerLabelFont = UIFont.systemFont(ofSize: 10.fit(), weight: .regular)
+        static let headerLabelInsets = UIEdgeInsets(top: 0, left: 4, bottom: -4, right: -16)
     }
     
     // MARK: - Private Properties

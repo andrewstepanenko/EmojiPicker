@@ -108,6 +108,9 @@ final class MCEmojiPickerView: UIView {
     
     private weak var delegate: MCEmojiPickerViewDelegate?
     
+    /// Guard to ensure setup is performed once when the view has a valid size.
+    private var didPerformInitialLayout = false
+    
     // MARK: - Initializers
     
     init(categoryTypes: [MCEmojiCategoryType] = MCEmojiCategoryType.allCases, delegate: MCEmojiPickerViewDelegate) {
@@ -124,8 +127,10 @@ final class MCEmojiPickerView: UIView {
     
     // MARK: - Life Cycle
     
-    override func draw(_ rect: CGRect) {
-        super.draw(rect)
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        guard !didPerformInitialLayout, bounds.width > 0, bounds.height > 0 else { return }
+        didPerformInitialLayout = true
         setupCategoryViews()
         setupCollectionViewLayout()
         setupCollectionViewBottomInsets()
@@ -202,12 +207,17 @@ final class MCEmojiPickerView: UIView {
     }
     
     private func setupCategoryViews() {
+        // Compute a stable icon size that looks good across widths.
+        // You can adjust these numbers if you want slightly bigger/smaller icons.
+        let proposedSize = max(18.0, min(26.0, bounds.width * 0.065))
+        
         for categoryIndex in 0...emojiCategoryTypes.count - 1 {
             let categoryView = MCTouchableEmojiCategoryView(
                 delegate: self,
                 categoryIndex: categoryIndex,
                 categoryType: emojiCategoryTypes[categoryIndex],
-                selectedEmojiCategoryTintColor: selectedEmojiCategoryTintColor
+                selectedEmojiCategoryTintColor: selectedEmojiCategoryTintColor,
+                iconSize: 16 //proposedSize
             )
             // Installing selected state for first category.
             categoryView.updateCategoryViewState(selectedCategoryIndex: .zero)
@@ -427,3 +437,4 @@ extension MCEmojiPickerView: MCEmojiSkinTonePickerDelegate {
         toggleCollectionScrollAbility(isEnabled: true)
     }
 }
+
